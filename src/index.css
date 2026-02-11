@@ -1,0 +1,154 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222 47% 6%;
+    --foreground: 0 0% 99.6%;
+    --card: 222 47% 10%;
+    --card-foreground: 0 0% 99.6%;
+    --popover: 222 47% 8%;
+    --popover-foreground: 0 0% 99.6%;
+    --primary: 22 90% 54%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 222 60% 16%;
+    --secondary-foreground: 0 0% 99.6%;
+    --muted: 222 30% 20%;
+    --muted-foreground: 215 20% 55%;
+    --accent: 22 90% 54%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 222 30% 18%;
+    --input: 222 30% 18%;
+    --ring: 22 90% 54%;
+    --radius: 0.625rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-brand-blue text-foreground font-sans antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  .gradient-text {
+    @apply bg-gradient-to-r from-brand-orange to-brand-orange-light bg-clip-text text-transparent;
+  }
+  
+  .gradient-primary {
+    @apply bg-gradient-to-r from-brand-orange to-brand-orange-light;
+  }
+  
+  .gradient-dark {
+    @apply bg-gradient-to-br from-brand-blue via-brand-blue-light to-brand-blue-soft;
+  }
+  
+  .glass-effect {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10;
+  }
+  
+  .card-hover {
+    @apply transition-all duration-300 ease-out;
+  }
+  
+  .card-hover:hover {
+    @apply -translate-y-2 shadow-orange border-brand-orange/30;
+  }
+  
+  .btn-primary {
+    @apply px-8 py-4 gradient-primary rounded-full text-white font-semibold 
+           shadow-orange transition-all duration-300 hover:shadow-orange-lg 
+           hover:scale-[1.02] active:scale-[0.98];
+  }
+  
+  .btn-secondary {
+    @apply px-8 py-4 glass-effect rounded-full text-white font-semibold 
+           transition-all duration-300 hover:bg-white/10;
+  }
+  
+  .section-padding {
+    @apply py-24 px-4 sm:px-6 lg:px-8;
+  }
+  
+  .container-custom {
+    @apply max-w-7xl mx-auto;
+  }
+  
+  .feature-icon {
+    @apply w-14 h-14 rounded-xl bg-brand-orange/20 flex items-center justify-center
+           transition-transform duration-300;
+  }
+  
+  .feature-icon svg {
+    @apply text-brand-orange;
+  }
+  
+  .card-group:hover .feature-icon {
+    @apply scale-110;
+  }
+}
+
+@layer utilities {
+  .animation-delay-100 {
+    animation-delay: 100ms;
+  }
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+  .animation-delay-300 {
+    animation-delay: 300ms;
+  }
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+  .animation-delay-500 {
+    animation-delay: 500ms;
+  }
+  .animation-delay-600 {
+    animation-delay: 600ms;
+  }
+  
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .bg-size-200 {
+    background-size: 200% 200%;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #02164F;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #F37022;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #FF8C42;
+}
+
+/* Selection styling */
+::selection {
+  background: rgba(243, 112, 34, 0.3);
+  color: #FEFEFE;
+}
