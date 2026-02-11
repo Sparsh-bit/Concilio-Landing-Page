@@ -15,7 +15,7 @@ import {
 
 const FeaturesSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
-  const [hoveredFeature, setHoveredFeature] = useState<number | null>(null);
+  const [_hoveredFeature, setHoveredFeature] = useState<number | null>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(

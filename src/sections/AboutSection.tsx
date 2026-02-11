@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Zap, Shield, Layers, Clock, Percent, Users, CheckCircle2, ArrowUpRight } from 'lucide-react';
 
 const AboutSection = () => {
-  const sectionRef = useRef<HTMLSection>(null);
+  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -18,7 +18,7 @@ const AboutSection = () => {
     );
 
     const elements = sectionRef.current?.querySelectorAll('.reveal-element');
-    elements?.forEach((el) => observer.observe(el));
+    elements?.forEach((el: Element) => observer.observe(el));
 
     return () => observer.disconnect();
   }, []);
