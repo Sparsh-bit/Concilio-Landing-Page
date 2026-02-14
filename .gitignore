@@ -51,3 +51,4 @@ coverage
 *.pem
 .cache
 
+node_modules

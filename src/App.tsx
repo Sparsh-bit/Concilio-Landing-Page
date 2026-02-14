@@ -1,30 +1,19 @@
-import Navbar from './sections/Navbar';
-import HeroSection from './sections/HeroSection';
-import AboutSection from './sections/AboutSection';
-import WhyChooseSection from './sections/WhyChooseSection';
-import SolutionsSection from './sections/SolutionsSection';
-import FeaturesSection from './sections/FeaturesSection';
-import ProcessSection from './sections/ProcessSection';
-import SecuritySection from './sections/SecuritySection';
-import CTASection from './sections/CTASection';
-import Footer from './sections/Footer';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import PetroLedger from "./pages/PetroLedger";
+import MarketERP from "./pages/MarketERP";
+import SchoolERP from "./pages/SchoolERP";
 
 function App() {
   return (
-    <div className="min-h-screen bg-brand-blue">
-      <Navbar />
-      <main>
-        <HeroSection />
-        <AboutSection />
-        <WhyChooseSection />
-        <SolutionsSection />
-        <FeaturesSection />
-        <ProcessSection />
-        <SecuritySection />
-        <CTASection />
-      </main>
-      <Footer />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/petroledger" element={<PetroLedger />} />
+        <Route path="/market-erp" element={<MarketERP />} />
+        <Route path="/school-erp" element={<SchoolERP />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

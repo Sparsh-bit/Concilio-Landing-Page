@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -6,149 +6,126 @@
 
 @layer base {
   :root {
-    --background: 222 47% 6%;
-    --foreground: 0 0% 99.6%;
-    --card: 222 47% 10%;
-    --card-foreground: 0 0% 99.6%;
-    --popover: 222 47% 8%;
-    --popover-foreground: 0 0% 99.6%;
-    --primary: 22 90% 54%;
+    /* Origin-style dark theme as default */
+    --background: 0 0% 0%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 347 77% 50%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 222 60% 16%;
-    --secondary-foreground: 0 0% 99.6%;
-    --muted: 222 30% 20%;
-    --muted-foreground: 215 20% 55%;
-    --accent: 22 90% 54%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84.2% 60.2%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 64%;
+    --accent: 347 77% 50%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 98%;
-    --border: 222 30% 18%;
-    --input: 222 30% 18%;
-    --ring: 22 90% 54%;
-    --radius: 0.625rem;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 347 77% 50%;
+    --radius: 0.75rem;
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 98%;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
+
   html {
+    overflow-x: hidden;
     scroll-behavior: smooth;
   }
+
   body {
-    @apply bg-brand-blue text-foreground font-sans antialiased;
-    font-family: 'Inter', system-ui, sans-serif;
+    @apply antialiased bg-background text-foreground;
+    font-family: "Inter", system-ui, sans-serif;
+  }
+
+  .font-display-serif {
+    font-family: "Instrument Serif", Georgia, serif;
   }
 }
 
 @layer components {
-  .gradient-text {
-    @apply bg-gradient-to-r from-brand-orange to-brand-orange-light bg-clip-text text-transparent;
+  .container-origin {
+    @apply max-w-6xl mx-auto px-6 lg:px-8;
   }
-  
-  .gradient-primary {
-    @apply bg-gradient-to-r from-brand-orange to-brand-orange-light;
+
+  .card-origin {
+    @apply rounded-3xl bg-[#0A0A0A] border border-white/[0.04] p-8 transition-all duration-500 hover:border-white/[0.08] hover:bg-[#0D0D0D];
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
   }
-  
-  .gradient-dark {
-    @apply bg-gradient-to-br from-brand-blue via-brand-blue-light to-brand-blue-soft;
+
+  .glass-card {
+    @apply relative overflow-hidden rounded-3xl border border-white/[0.05] bg-white/[0.02] backdrop-blur-2xl px-12 py-16;
   }
-  
-  .glass-effect {
-    @apply bg-white/5 backdrop-blur-xl border border-white/10;
+
+  .btn-cta-white {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-white text-black font-semibold text-sm uppercase tracking-wide hover:bg-white/90 transition-colors;
   }
-  
-  .card-hover {
-    @apply transition-all duration-300 ease-out;
+
+  .btn-cta-dark {
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-lg bg-[#262626] text-white font-semibold text-sm uppercase tracking-wide hover:bg-[#333] transition-colors border border-white/5;
   }
-  
-  .card-hover:hover {
-    @apply -translate-y-2 shadow-orange border-brand-orange/30;
-  }
-  
+
   .btn-primary {
-    @apply px-8 py-4 gradient-primary rounded-full text-white font-semibold 
-           shadow-orange transition-all duration-300 hover:shadow-orange-lg 
-           hover:scale-[1.02] active:scale-[0.98];
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors;
   }
-  
+
   .btn-secondary {
-    @apply px-8 py-4 glass-effect rounded-full text-white font-semibold 
-           transition-all duration-300 hover:bg-white/10;
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg border border-border bg-transparent font-medium text-foreground hover:bg-muted transition-colors;
   }
-  
-  .section-padding {
-    @apply py-24 px-4 sm:px-6 lg:px-8;
+
+  .reveal-up {
+    /* Intentionally left default so GSAP can take over */
+    will-change: transform, opacity;
   }
-  
-  .container-custom {
-    @apply max-w-7xl mx-auto;
+
+  .reveal-up.revealed {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .feature-icon {
-    @apply w-14 h-14 rounded-xl bg-brand-orange/20 flex items-center justify-center
-           transition-transform duration-300;
+
+  .testimonial-card {
+    @apply rounded-2xl p-8 flex flex-col justify-between min-h-[280px];
   }
-  
-  .feature-icon svg {
-    @apply text-brand-orange;
-  }
-  
-  .card-group:hover .feature-icon {
-    @apply scale-110;
+
+  .animate-fade-in-up {
+    animation: fadeInUp 1s ease-out forwards;
   }
 }
 
-@layer utilities {
-  .animation-delay-100 {
-    animation-delay: 100ms;
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
   }
-  .animation-delay-200 {
-    animation-delay: 200ms;
-  }
-  .animation-delay-300 {
-    animation-delay: 300ms;
-  }
-  .animation-delay-400 {
-    animation-delay: 400ms;
-  }
-  .animation-delay-500 {
-    animation-delay: 500ms;
-  }
-  .animation-delay-600 {
-    animation-delay: 600ms;
-  }
-  
-  .text-balance {
-    text-wrap: balance;
-  }
-  
-  .bg-size-200 {
-    background-size: 200% 200%;
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-/* Scrollbar styling */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #02164F;
+  @apply bg-transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #F37022;
-  border-radius: 4px;
+  @apply bg-white/10 rounded-full hover:bg-white/20 transition-colors;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #FF8C42;
-}
-
-/* Selection styling */
-::selection {
-  background: rgba(243, 112, 34, 0.3);
-  color: #FEFEFE;
+@media (max-width: 768px) {
+  .container-origin {
+    @apply px-4;
+  }
 }
