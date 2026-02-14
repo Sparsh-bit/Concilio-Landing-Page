@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Gauge, ShieldCheck, Database, Zap, Cpu, Activity, ChevronDown } from "lucide-react";
+import { ArrowLeft, Gauge, ShieldCheck, Zap, Cpu, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Highlight } from "../components/ui/hero-highlight";
 import { motion } from "framer-motion";
 
 gsap.registerPlugin(ScrollTrigger);
