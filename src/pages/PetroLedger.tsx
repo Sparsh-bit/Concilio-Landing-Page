@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Gauge, ShieldCheck, Zap, Cpu, ChevronDown } from "lucide-react";
+import { ArrowLeft, ShieldCheck, Zap, Cpu, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion } from "framer-motion";
+import ScrollCanvas from "../components/ScrollCanvas";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -11,87 +12,29 @@ const frameCount = 192;
 const framesDir = "/frames";
 
 const PetroLedger = () => {
-    const canvasRef = useRef<HTMLCanvasElement>(null);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
-    const [images, setImages] = useState<HTMLImageElement[]>([]);
     const [isLoaded, setIsLoaded] = useState(false);
+    const [scrollProgress, setScrollProgress] = useState(0);
 
-    // Preload images
+    // Scroll trigger to track progress
     useEffect(() => {
-        const loadedImages: HTMLImageElement[] = [];
-        let loadedCount = 0;
+        // Wait for load to ensure layout is stable, though not strictly required for logic
+        if (!isLoaded) return;
 
-        for (let i = 1; i <= frameCount; i++) {
-            const img = new Image();
-            const frameIndex = i.toString().padStart(3, "0");
-            img.src = `${framesDir}/ezgif-frame-${frameIndex}.jpg`;
-            img.onload = () => {
-                loadedCount++;
-                if (loadedCount === frameCount) {
-                    setIsLoaded(true);
-                }
-            };
-            loadedImages.push(img);
-        }
-        setImages(loadedImages);
-    }, []);
-
-    // Canvas render and scroll animation
-    useEffect(() => {
-        if (!isLoaded || !canvasRef.current || !scrollContainerRef.current) return;
-
-        const canvas = canvasRef.current;
-        const context = canvas.getContext("2d");
-        if (!context) return;
-
-        // Set dimensions - we want high quality
-        canvas.width = 1920;
-        canvas.height = 1080;
-
-        const render = (index: number) => {
-            if (images[index]) {
-                context.clearRect(0, 0, canvas.width, canvas.height);
-                const img = images[index];
-                const hRatio = canvas.width / img.width;
-                const vRatio = canvas.height / img.height;
-                const ratio = Math.max(hRatio, vRatio); // Cover to fill canvas
-
-                const centerShift_x = (canvas.width - img.width * ratio) / 2;
-                const centerShift_y = (canvas.height - img.height * ratio) / 2;
-
-                context.drawImage(
-                    img,
-                    0,
-                    0,
-                    img.width,
-                    img.height,
-                    centerShift_x,
-                    centerShift_y,
-                    img.width * ratio,
-                    img.height * ratio
-                );
-            }
-        };
-
-        render(0);
-
-        // We use the scrollContainerRef (the tall invisible div) to drive the animation
         const trigger = ScrollTrigger.create({
             trigger: scrollContainerRef.current,
             start: "top top",
             end: "bottom bottom",
             scrub: 0.1, // Very responsive
             onUpdate: (self) => {
-                const frameIndex = Math.round(self.progress * (frameCount - 1));
-                const safeIndex = Math.min(Math.max(frameIndex, 0), frameCount - 1);
-                requestAnimationFrame(() => render(safeIndex));
+                setScrollProgress(self.progress);
             },
         });
 
         return () => {
             trigger.kill();
         };
-    }, [isLoaded, images]);
+    }, [isLoaded]);
 
     // Text animations
     useEffect(() => {
@@ -125,6 +68,15 @@ const PetroLedger = () => {
                 <div className="flex flex-col items-center gap-6">
                     <div className="w-16 h-16 border-2 border-[#d4af37]/20 border-t-[#d4af37] rounded-full animate-spin"></div>
                     <p className="font-display-serif italic text-xl tracking-widest text-[#d4af37]">System Initializing...</p>
+                    {/* Render ScrollCanvas hidden to preload */}
+                    <div className="hidden">
+                        <ScrollCanvas
+                            scrollProgress={0}
+                            frameCount={frameCount}
+                            frameFolder={framesDir}
+                            onLoadProgress={(p) => { if (p >= 1) setIsLoaded(true); }}
+                        />
+                    </div>
                 </div>
             </div>
         );
@@ -153,7 +105,13 @@ const PetroLedger = () => {
                 {/* THE IMAGE FRAME */}
                 <div className="relative w-[90%] md:w-[80%] max-w-[1400px] aspect-video bg-black rounded-sm border border-[#333] shadow-[0_0_100px_rgba(0,0,0,0.8)] overflow-hidden">
                     {/* Canvas Video */}
-                    <canvas ref={canvasRef} className="w-full h-full object-cover opacity-90 sepia-[0.1]" />
+                    <div className="w-full h-full opacity-90 sepia-[0.1]">
+                        <ScrollCanvas
+                            scrollProgress={scrollProgress}
+                            frameCount={frameCount}
+                            frameFolder={framesDir}
+                        />
+                    </div>
 
                     {/* HUD Overlays (Fixed on image) */}
                     <div className="absolute top-4 left-6 flex flex-col gap-1 z-20">
@@ -228,10 +186,10 @@ const PetroLedger = () => {
                     <div className="absolute top-[80vh] w-full px-8 md:px-20 pointer-events-none">
                         <div className="flex justify-end">
                             <div className="text-section pointer-events-auto max-w-sm p-8 bg-black/90 backdrop-blur-xl border border-white/10 border-r-4 border-r-[#d4af37] rounded-lg shadow-2xl transform transition-transform hover:scale-105">
-                                <Gauge className="w-8 h-8 text-[#d4af37] mb-4" />
-                                <h2 className="font-display-serif text-3xl italic text-white mb-2">Precision Core</h2>
+                                <ShieldCheck className="w-8 h-8 text-[#d4af37] mb-4" />
+                                <h2 className="font-display-serif text-3xl italic text-white mb-2">Employee Trust Score</h2>
                                 <p className="text-sm text-gray-400 leading-relaxed text-right md:text-left">
-                                    Built for the extremes. Our aerospace-grade sensors maintain <span className="text-white font-bold">99.9% accuracy</span> even under high-pressure flow conditions.
+                                    Monitor attendant performance and reliability with <span className="text-white font-bold">AI-driven trust scores</span> ensuring operational integrity.
                                 </p>
                             </div>
                         </div>
@@ -242,9 +200,9 @@ const PetroLedger = () => {
                         <div className="flex justify-start">
                             <div className="text-section pointer-events-auto max-w-sm p-8 bg-black/90 backdrop-blur-xl border border-white/10 border-l-4 border-l-[#d4af37] rounded-lg shadow-2xl transform transition-transform hover:scale-105">
                                 <Cpu className="w-8 h-8 text-[#d4af37] mb-4" />
-                                <h2 className="font-display-serif text-3xl italic text-white mb-2">Neural Edge</h2>
+                                <h2 className="font-display-serif text-3xl italic text-white mb-2">CNG Safety Validation</h2>
                                 <p className="text-sm text-gray-400 leading-relaxed">
-                                    On-board AI processing detects density anomalies instantly. It distinguishes between fuel grades and detects water contamination in milliseconds.
+                                    Automatically detect vehicles with expired or unverified CNG cylinders using advanced CCTV feeds, ensuring station safety.
                                 </p>
                             </div>
                         </div>
@@ -254,10 +212,10 @@ const PetroLedger = () => {
                     <div className="absolute top-[240vh] w-full px-8 md:px-20 pointer-events-none">
                         <div className="flex justify-end">
                             <div className="text-section pointer-events-auto max-w-sm p-8 bg-black/90 backdrop-blur-xl border border-white/10 border-r-4 border-r-[#d4af37] rounded-lg shadow-2xl transform transition-transform hover:scale-105">
-                                <ShieldCheck className="w-8 h-8 text-[#d4af37] mb-4" />
-                                <h2 className="font-display-serif text-3xl italic text-white mb-2">Auto-Lock</h2>
+                                <Zap className="w-8 h-8 text-[#d4af37] mb-4" />
+                                <h2 className="font-display-serif text-3xl italic text-white mb-2">Instant Guard</h2>
                                 <p className="text-sm text-gray-400 leading-relaxed text-right md:text-left">
-                                    Zero tolerance for theft. The nozzle mechanically locks if flow data doesn't match the authorized transaction from the server.
+                                    Instant alerts sent to managers and owners the moment a non-compliant vehicle enters CCTV surveillance.
                                 </p>
                             </div>
                         </div>
@@ -293,9 +251,9 @@ const PetroLedger = () => {
                         <Link to="/#contact" className="px-10 py-5 bg-[#d4af37] text-black font-bold uppercase tracking-widest hover:bg-[#b5952f] transition-all transform hover:scale-105 shadow-[0_0_40px_-10px_rgba(212,175,55,0.4)]">
                             Inquire Now
                         </Link>
-                        <a href="mailto:sales@concilio.in" className="px-10 py-5 bg-transparent border border-[#e8e4dc]/20 text-[#e8e4dc] font-bold uppercase tracking-widest hover:bg-[#e8e4dc]/5 transition-colors">
-                            Technical Specs
-                        </a>
+                        <Link to="/petro-problem" className="px-10 py-5 bg-transparent border border-[#e8e4dc]/20 text-[#e8e4dc] font-bold uppercase tracking-widest hover:bg-[#e8e4dc]/5 transition-colors">
+                            Report Issue
+                        </Link>
                     </div>
 
                     <div className="mt-24 opacity-30 text-xs tracking-widest uppercase">

@@ -10,6 +10,7 @@ import { AssetAllocation, MarketSparklines, PortfolioGraph, PositionTable } from
 import { ConcilioInfo } from "./ConcilioInfo";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import ProblemDescriptionForm from "./ProblemDescriptionForm";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -256,29 +257,15 @@ const PostSequence: React.FC = () => {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-20 md:py-28 border-b border-white/5">
+      {/* Problem Solver Section */}
+      <section className="py-20 md:py-28 border-b border-white/5 bg-gradient-to-b from-transparent to-emerald-950/20">
         <div className="container-origin">
-          <h2 className="font-display-serif text-3xl md:text-4xl lg:text-5xl text-white italic text-center mb-14">
-            Trusted by owners
-          </h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            <article className="reveal-up testimonial-card bg-gradient-to-br from-emerald-800/90 to-lime-600/80 border border-white/10">
-              <div className="flex gap-1 mb-6"><span className="text-white/90 text-lg">★</span><span className="text-white/90 text-lg">★</span><span className="text-white/90 text-lg">★</span><span className="text-white/90 text-lg">★</span><span className="text-white/90 text-lg">★</span></div>
-              <p className="text-white/95 text-sm leading-relaxed flex-1">"Finally, I can see my exact stock and sales from home. The QR reconciliation feature alone saves me 2 hours every night."</p>
-              <p className="text-white/80 text-xs font-semibold uppercase tracking-widest mt-6">RAJESH K., HPCL DEALER</p>
-            </article>
-            <article className="reveal-up testimonial-card bg-gradient-to-br from-cyan-800/90 to-teal-500/80 border border-white/10 backdrop-blur-sm" style={{ transitionDelay: '80ms' }}>
-              <div className="flex gap-1 mb-6"><span className="text-white/90 text-lg">★</span><span className="text-white/90 text-lg">★</span><span className="text-white/90 text-lg">★</span><span className="text-white/90 text-lg">★</span><span className="text-white/90 text-lg">★</span></div>
-              <p className="text-white/95 text-sm leading-relaxed flex-1">"Concilio's fraud detection caught a density mismatch issue that was costing us lakhs. The investment paid for itself in a month."</p>
-              <p className="text-white/80 text-xs font-semibold uppercase tracking-widest mt-6">VIKRAM S., IOCL OWNER</p>
-            </article>
-            <article className="reveal-up testimonial-card bg-gradient-to-br from-blue-800/90 to-indigo-500/80 border border-white/10" style={{ transitionDelay: '160ms' }}>
-              <div className="flex gap-1 mb-6"><span className="text-white/90 text-lg">★</span><span className="text-white/90 text-lg">★</span><span className="text-white/90 text-lg">★</span><span className="text-white/90 text-lg">★</span><span className="text-white/90 text-lg">★</span></div>
-              <p className="text-white/95 text-sm leading-relaxed flex-1">"Managing 5 outlets was a nightmare before PetroLedger. Now I have a single dashboard for everything. Highly recommended."</p>
-              <p className="text-white/80 text-xs font-semibold uppercase tracking-widest mt-6">AMIT G., NAYARA ENERGY</p>
-            </article>
-          </div>
+          <ProblemDescriptionForm
+            title="What's holding your business back?"
+            subtitle="Describe the operational challenges you face. Our team will analyze your problem and propose a tailored technological solution."
+            context="general"
+            className="reveal-up"
+          />
         </div>
       </section>
 

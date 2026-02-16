@@ -1,13 +1,24 @@
 import { useCallback, useEffect, useRef } from "react";
-import { FRAME_FOLDER, FRAME_PREFIX, TOTAL_FRAMES, WATERMARK_CROP_PERCENT } from "../data/scrollData";
 
 interface ScrollCanvasProps {
   scrollProgress: number;
+  frameCount: number;
+  frameFolder: string;
+  framePrefix?: string;
   frameOverride?: number;
   onLoadProgress?: (progress: number) => void;
+  watermarkCropPercent?: number;
 }
 
-const ScrollCanvas: React.FC<ScrollCanvasProps> = ({ scrollProgress, frameOverride, onLoadProgress }) => {
+const ScrollCanvas: React.FC<ScrollCanvasProps> = ({
+  scrollProgress,
+  frameCount,
+  frameFolder,
+  framePrefix = "ezgif-frame-",
+  frameOverride,
+  onLoadProgress,
+  watermarkCropPercent = 0
+}) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imagesRef = useRef<HTMLImageElement[]>([]);
   const rafRef = useRef<number | null>(null);
@@ -15,8 +26,10 @@ const ScrollCanvas: React.FC<ScrollCanvasProps> = ({ scrollProgress, frameOverri
 
   const getFramePath = useCallback((index: number): string => {
     const frame = String(index + 1).padStart(3, "0");
-    return `${FRAME_FOLDER}${FRAME_PREFIX}${frame}.jpg`;
-  }, []);
+    // Ensure folder ends with / if not provided
+    const folder = frameFolder.endsWith('/') ? frameFolder : `${frameFolder}/`;
+    return `${folder}${framePrefix}${frame}.jpg`;
+  }, [frameFolder, framePrefix]);
 
   const drawFrame = useCallback((frameIndex: number) => {
     const canvas = canvasRef.current;
@@ -29,6 +42,8 @@ const ScrollCanvas: React.FC<ScrollCanvasProps> = ({ scrollProgress, frameOverri
 
     const displayWidth = canvas.clientWidth;
     const displayHeight = canvas.clientHeight;
+    // Use simple 1.0 pixel ratio for performance, or window.devicePixelRatio for quality
+    // Given the previous code used 1920x1080 fixed, let's stick to dynamic sizing
     const dpr = window.devicePixelRatio || 1;
 
     // Correctly scale canvas for High DPI displays
@@ -40,11 +55,15 @@ const ScrollCanvas: React.FC<ScrollCanvasProps> = ({ scrollProgress, frameOverri
       canvas.height = targetHeight;
     }
 
+    // Optimization: turn off alpha if possible, but we might need it for cropping/clearing
+    // context.globalCompositeOperation = 'copy'; // Faster if we cover the whole canvas
+
+    // We clear rect only if we are not covering the whole canvas, but cover logic usually does.
     context.clearRect(0, 0, canvas.width, canvas.height);
 
     const sourceWidth = image.naturalWidth;
     const sourceHeight = image.naturalHeight;
-    const cropHeight = Math.floor(sourceHeight * WATERMARK_CROP_PERCENT);
+    const cropHeight = Math.floor(sourceHeight * watermarkCropPercent);
     const sourceCropHeight = sourceHeight - cropHeight;
 
     const imageAspect = sourceWidth / sourceCropHeight;
@@ -52,15 +71,13 @@ const ScrollCanvas: React.FC<ScrollCanvasProps> = ({ scrollProgress, frameOverri
 
     let drawWidth, drawHeight, drawX, drawY;
 
-    // "Cover" logic: ensure the image covers the entire canvas
+    // "Cover" logic
     if (imageAspect > viewportAspect) {
-      // Image is wider than viewport
       drawHeight = targetHeight;
       drawWidth = targetHeight * imageAspect;
       drawX = (targetWidth - drawWidth) / 2;
       drawY = 0;
     } else {
-      // Image is taller than viewport
       drawWidth = targetWidth;
       drawHeight = targetWidth / imageAspect;
       drawX = 0;
@@ -78,27 +95,32 @@ const ScrollCanvas: React.FC<ScrollCanvasProps> = ({ scrollProgress, frameOverri
       drawWidth,
       drawHeight
     );
-  }, []);
+  }, [watermarkCropPercent]);
 
   useEffect(() => {
     const images: HTMLImageElement[] = [];
     let loadedCount = 0;
 
-    for (let index = 0; index < TOTAL_FRAMES; index++) {
+    // Cancel any previous loads if props change
+    let isActive = true;
+
+    for (let index = 0; index < frameCount; index++) {
       const image = new Image();
-      image.decoding = "async";
+      image.decoding = "async"; // Hint to browser
       image.src = getFramePath(index);
       image.onload = () => {
+        if (!isActive) return;
         loadedCount++;
         if (onLoadProgress) {
-          onLoadProgress(loadedCount / TOTAL_FRAMES);
+          onLoadProgress(loadedCount / frameCount);
         }
         if (index === currentFrameRef.current) drawFrame(index);
       };
       image.onerror = () => {
-        loadedCount++; // Count as "finished" even if error to avoid blocking the loader forever
+        if (!isActive) return;
+        loadedCount++;
         if (onLoadProgress) {
-          onLoadProgress(loadedCount / TOTAL_FRAMES);
+          onLoadProgress(loadedCount / frameCount);
         }
       };
       images.push(image);
@@ -107,21 +129,22 @@ const ScrollCanvas: React.FC<ScrollCanvasProps> = ({ scrollProgress, frameOverri
     imagesRef.current = images;
 
     return () => {
+      isActive = false;
       images.forEach((image) => {
         image.onload = null;
         image.onerror = null;
       });
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [drawFrame, getFramePath, onLoadProgress]);
+  }, [drawFrame, getFramePath, onLoadProgress, frameCount]);
 
   useEffect(() => {
     const targetFrame =
       typeof frameOverride === "number"
-        ? Math.max(0, Math.min(TOTAL_FRAMES - 1, frameOverride))
-        : Math.max(0, Math.min(TOTAL_FRAMES - 1, Math.round(scrollProgress * (TOTAL_FRAMES - 1))));
+        ? Math.max(0, Math.min(frameCount - 1, frameOverride))
+        : Math.max(0, Math.min(frameCount - 1, Math.round(scrollProgress * (frameCount - 1))));
 
-    if (targetFrame === currentFrameRef.current && !frameOverride) return;
+    if (targetFrame === currentFrameRef.current && typeof frameOverride === 'undefined') return;
     currentFrameRef.current = targetFrame;
 
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
@@ -129,15 +152,18 @@ const ScrollCanvas: React.FC<ScrollCanvasProps> = ({ scrollProgress, frameOverri
       drawFrame(targetFrame);
       rafRef.current = null;
     });
-  }, [drawFrame, frameOverride, scrollProgress]);
+  }, [drawFrame, frameOverride, scrollProgress, frameCount]);
 
   useEffect(() => {
-    const handleResize = () => drawFrame(currentFrameRef.current);
+    const handleResize = () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = requestAnimationFrame(() => drawFrame(currentFrameRef.current));
+    }
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, [drawFrame]);
 
-  return <canvas ref={canvasRef} className="scroll-canvas" aria-hidden="true" />;
+  return <canvas ref={canvasRef} className="w-full h-full object-cover" />;
 };
 
 export default ScrollCanvas;

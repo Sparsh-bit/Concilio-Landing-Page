@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion } from "framer-motion";
+import ScrollCanvas from "../components/ScrollCanvas";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -11,95 +12,28 @@ const frameCount = 200;
 const framesDir = "/frames_3";
 
 const SchoolERP = () => {
-    const canvasRef = useRef<HTMLCanvasElement>(null);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
-    const [images, setImages] = useState<HTMLImageElement[]>([]);
     const [isLoaded, setIsLoaded] = useState(false);
+    const [scrollProgress, setScrollProgress] = useState(0);
 
-    // Preload images
+    // Scroll trigger to track progress
     useEffect(() => {
-        const loadedImages: HTMLImageElement[] = [];
-        let loadedCount = 0;
-
-        for (let i = 1; i <= frameCount; i++) {
-            const img = new Image();
-            const frameIndex = i.toString().padStart(3, "0");
-            img.src = `${framesDir}/ezgif-frame-${frameIndex}.jpg`;
-            img.onload = () => {
-                loadedCount++;
-                if (loadedCount === frameCount) {
-                    setIsLoaded(true);
-                }
-            };
-            loadedImages.push(img);
-        }
-        setImages(loadedImages);
-    }, []);
-
-    // Canvas render and scroll animation
-    useEffect(() => {
-        if (!isLoaded || !canvasRef.current || !scrollContainerRef.current) return;
-
-        const canvas = canvasRef.current;
-        const context = canvas.getContext("2d", { alpha: false }); // Alpha false for speed
-        if (!context) return;
-
-        // Optimized Resize Handler
-        const handleResize = () => {
-            const width = Math.min(window.innerWidth, 1920);
-            const height = Math.min(window.innerHeight, 1080);
-            canvas.width = width;
-            canvas.height = height;
-            context.imageSmoothingEnabled = true;
-            context.imageSmoothingQuality = "medium";
-
-            // Re-render current frame on resize
-            // We need to access the current index, but for now just render 0 or safe fallback
-        };
-
-        handleResize();
-        window.addEventListener('resize', handleResize);
-
-        const render = (index: number) => {
-            const img = images[index];
-            if (img) {
-                // Background clear not strictly needed if we cover, but safer
-                // context.clearRect(0, 0, canvas.width, canvas.height); 
-
-                const hRatio = canvas.width / img.width;
-                const vRatio = canvas.height / img.height;
-                const ratio = Math.max(hRatio, vRatio);
-
-                // Integer coordinates for faster rendering
-                const centerShift_x = Math.floor((canvas.width - img.width * ratio) / 2);
-                const centerShift_y = Math.floor((canvas.height - img.height * ratio) / 2);
-                const dw = Math.ceil(img.width * ratio);
-                const dh = Math.ceil(img.height * ratio);
-
-                context.drawImage(img, 0, 0, img.width, img.height, centerShift_x, centerShift_y, dw, dh);
-            }
-        };
-
-        // Initial render
-        render(0);
+        if (!isLoaded) return;
 
         const trigger = ScrollTrigger.create({
             trigger: scrollContainerRef.current,
             start: "top top",
             end: "bottom bottom",
-            scrub: 0, // Instant scrub for responsiveness (or very low like 0.1)
+            scrub: 0, // Instant scrub for responsiveness
             onUpdate: (self) => {
-                const frameIndex = Math.round(self.progress * (frameCount - 1));
-                const safeIndex = Math.min(Math.max(frameIndex, 0), frameCount - 1);
-                render(safeIndex); // Direct call, no RAF wrap
+                setScrollProgress(self.progress);
             },
         });
 
         return () => {
             trigger.kill();
-            window.removeEventListener('resize', handleResize);
         };
-    }, [isLoaded, images]);
+    }, [isLoaded]);
 
     // Text animations
     useEffect(() => {
@@ -138,6 +72,14 @@ const SchoolERP = () => {
                         </div>
                     </div>
                     <p className="font-display-serif italic text-xl tracking-widest text-[#ffcc00]">INITIALIZING SYSTEM...</p>
+                    <div className="hidden">
+                        <ScrollCanvas
+                            scrollProgress={0}
+                            frameCount={frameCount}
+                            frameFolder={framesDir}
+                            onLoadProgress={(p) => { if (p >= 1) setIsLoaded(true); }}
+                        />
+                    </div>
                 </div>
             </div>
         );
@@ -163,7 +105,13 @@ const SchoolERP = () => {
                 {/* THE IMAGE FRAME */}
                 <div className="relative w-[95%] md:w-[85%] max-w-[1500px] aspect-video bg-black rounded-lg border border-[#ffcc00]/10 shadow-[0_0_100px_-30px_rgba(255,204,0,0.15)] overflow-hidden ring-1 ring-white/5 group">
                     {/* Canvas Video - Sharpened & Clear */}
-                    <canvas ref={canvasRef} className="w-full h-full object-cover opacity-100" />
+                    <div className="w-full h-full opacity-100">
+                        <ScrollCanvas
+                            scrollProgress={scrollProgress}
+                            frameCount={frameCount}
+                            frameFolder={framesDir}
+                        />
+                    </div>
 
                     {/* Watermark Cover - Bottom Right */}
                     <div className="absolute bottom-4 right-4 bg-black/95 px-4 py-1 z-30 flex items-center gap-2 border border-white/10 rounded-sm shadow-lg">
@@ -336,9 +284,9 @@ const SchoolERP = () => {
                             <button className="px-10 py-4 bg-[#ffcc00] hover:bg-[#ffdb4d] text-black font-bold text-sm uppercase tracking-widest rounded-none transition-all hover:scale-105 shadow-[0_0_40px_-5px_rgba(255,204,0,0.3)]">
                                 Schedule Demo
                             </button>
-                            <button className="px-10 py-4 bg-transparent hover:bg-white/5 text-[#e8e4dc] font-bold text-sm uppercase tracking-widest rounded-none border border-[#e8e4dc]/20 transition-all">
-                                Download Brochure
-                            </button>
+                            <Link to="/school-problem" className="px-10 py-4 bg-transparent hover:bg-white/5 text-[#e8e4dc] font-bold text-sm uppercase tracking-widest rounded-none border border-[#e8e4dc]/20 transition-all text-center">
+                                Report Issue
+                            </Link>
                         </div>
 
                         <div className="mt-24 opacity-30">

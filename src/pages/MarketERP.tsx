@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion } from "framer-motion";
+import ScrollCanvas from "../components/ScrollCanvas";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -11,68 +12,13 @@ const frameCount = 200;
 const framesDir = "/frames_2";
 
 const MarketERP = () => {
-    const canvasRef = useRef<HTMLCanvasElement>(null);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
-    const [images, setImages] = useState<HTMLImageElement[]>([]);
     const [isLoaded, setIsLoaded] = useState(false);
+    const [scrollProgress, setScrollProgress] = useState(0);
 
-    // Preload images
+    // Scroll trigger to track progress
     useEffect(() => {
-        const loadedImages: HTMLImageElement[] = [];
-        let loadedCount = 0;
-
-        for (let i = 1; i <= frameCount; i++) {
-            const img = new Image();
-            const frameIndex = i.toString().padStart(3, "0");
-            img.src = `${framesDir}/ezgif-frame-${frameIndex}.jpg`;
-            img.onload = () => {
-                loadedCount++;
-                if (loadedCount === frameCount) {
-                    setIsLoaded(true);
-                }
-            };
-            loadedImages.push(img);
-        }
-        setImages(loadedImages);
-    }, []);
-
-    // Canvas render and scroll animation
-    useEffect(() => {
-        if (!isLoaded || !canvasRef.current || !scrollContainerRef.current) return;
-
-        const canvas = canvasRef.current;
-        const context = canvas.getContext("2d");
-        if (!context) return;
-
-        canvas.width = 1920;
-        canvas.height = 1080;
-
-        const render = (index: number) => {
-            if (images[index]) {
-                context.clearRect(0, 0, canvas.width, canvas.height);
-                const img = images[index];
-                const hRatio = canvas.width / img.width;
-                const vRatio = canvas.height / img.height;
-                const ratio = Math.max(hRatio, vRatio); // Cover to fill canvas
-
-                const centerShift_x = (canvas.width - img.width * ratio) / 2;
-                const centerShift_y = (canvas.height - img.height * ratio) / 2;
-
-                context.drawImage(
-                    img,
-                    0,
-                    0,
-                    img.width,
-                    img.height,
-                    centerShift_x,
-                    centerShift_y,
-                    img.width * ratio,
-                    img.height * ratio
-                );
-            }
-        };
-
-        render(0);
+        if (!isLoaded) return;
 
         const trigger = ScrollTrigger.create({
             trigger: scrollContainerRef.current,
@@ -80,16 +26,14 @@ const MarketERP = () => {
             end: "bottom bottom",
             scrub: 0.1,
             onUpdate: (self) => {
-                const frameIndex = Math.round(self.progress * (frameCount - 1));
-                const safeIndex = Math.min(Math.max(frameIndex, 0), frameCount - 1);
-                requestAnimationFrame(() => render(safeIndex));
+                setScrollProgress(self.progress);
             },
         });
 
         return () => {
             trigger.kill();
         };
-    }, [isLoaded, images]);
+    }, [isLoaded]);
 
     // Text animations
     useEffect(() => {
@@ -127,6 +71,14 @@ const MarketERP = () => {
                         </div>
                     </div>
                     <p className="font-mono text-xl tracking-widest text-cyan-400">CONNECTING NEURAL NET...</p>
+                    <div className="hidden">
+                        <ScrollCanvas
+                            scrollProgress={0}
+                            frameCount={frameCount}
+                            frameFolder={framesDir}
+                            onLoadProgress={(p) => { if (p >= 1) setIsLoaded(true); }}
+                        />
+                    </div>
                 </div>
             </div>
         );
@@ -154,7 +106,13 @@ const MarketERP = () => {
                 {/* THE IMAGE FRAME */}
                 <div className="relative w-[95%] md:w-[85%] max-w-[1500px] aspect-video bg-black/80 rounded-lg border border-cyan-500/20 shadow-[0_0_100px_-20px_rgba(8,145,178,0.3)] overflow-hidden ring-1 ring-white/5">
                     {/* Canvas Video */}
-                    <canvas ref={canvasRef} className="w-full h-full object-cover opacity-80 mix-blend-screen" />
+                    <div className="w-full h-full opacity-80 mix-blend-screen">
+                        <ScrollCanvas
+                            scrollProgress={scrollProgress}
+                            frameCount={frameCount}
+                            frameFolder={framesDir}
+                        />
+                    </div>
 
                     {/* HUD Overlays */}
                     <div className="absolute top-6 left-8 z-20 font-mono">
@@ -241,7 +199,7 @@ const MarketERP = () => {
                                 className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed px-4"
                             >
                                 The operating system for modern commerce. <br />
-                                <span className="text-cyan-400 font-semibold">Connect data. Predict demand. Automate scale.</span>
+                                <span className="text-cyan-300 font-semibold drop-shadow-[0_0_15px_rgba(34,211,238,0.5)]">Connect data. Predict demand. Automate scale.</span>
                             </motion.p>
                         </div>
 
@@ -256,8 +214,8 @@ const MarketERP = () => {
                         <div className="text-section pointer-events-auto max-w-sm p-8 bg-slate-950/80 backdrop-blur-xl border border-cyan-900/50 border-l-4 border-l-cyan-500 rounded-xl shadow-[0_0_50px_-20px_rgba(6,182,212,0.3)]">
                             <Layers className="w-10 h-10 text-cyan-400 mb-6" />
                             <h2 className="text-3xl font-bold text-white mb-3">Unified Intelligence</h2>
-                            <p className="text-slate-400 leading-relaxed text-sm">
-                                Stop tab-switching. Connect Amazon, Flipkart, Shopify, and Meesho into one central command center. View <span className="text-white">real-time profit & loss</span> across all channels instantly.
+                            <p className="text-slate-300 leading-relaxed text-sm">
+                                Stop tab-switching. Connect Amazon, Flipkart, Shopify, and Meesho into one central command center. View <span className="text-white font-semibold">real-time profit & loss</span> across all channels instantly.
                             </p>
                             <div className="mt-4 flex gap-2">
                                 {/* Platform Icons Placeholders */}
@@ -337,9 +295,9 @@ const MarketERP = () => {
                             <button className="px-8 py-4 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-lg transition-all shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:shadow-[0_0_50px_rgba(6,182,212,0.6)]">
                                 Start Free Trial
                             </button>
-                            <button className="px-8 py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg border border-slate-700 transition-all">
-                                View Documentation
-                            </button>
+                            <Link to="/market-problem" className="px-8 py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg border border-slate-700 transition-all text-center">
+                                Report Issue
+                            </Link>
                         </div>
                     </div>
                 </div>
