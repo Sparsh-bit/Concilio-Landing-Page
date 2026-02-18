@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion } from "framer-motion";
 import ScrollCanvas from "../components/ScrollCanvas";
+import Footer from "../components/Footer";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -25,7 +26,7 @@ const PetroLedger = () => {
             trigger: scrollContainerRef.current,
             start: "top top",
             end: "bottom bottom",
-            scrub: 0.1, // Very responsive
+            scrub: 0.8, // Smooth scrub for buttery scroll
             onUpdate: (self) => {
                 setScrollProgress(self.progress);
             },
@@ -248,7 +249,7 @@ const PetroLedger = () => {
                     </p>
 
                     <div className="flex flex-col md:flex-row gap-6">
-                        <Link to="/#contact" className="px-10 py-5 bg-[#d4af37] text-black font-bold uppercase tracking-widest hover:bg-[#b5952f] transition-all transform hover:scale-105 shadow-[0_0_40px_-10px_rgba(212,175,55,0.4)]">
+                        <Link to="/describe-problem" className="px-10 py-5 bg-[#d4af37] text-black font-bold uppercase tracking-widest hover:bg-[#b5952f] transition-all transform hover:scale-105 shadow-[0_0_40px_-10px_rgba(212,175,55,0.4)]">
                             Inquire Now
                         </Link>
                         <Link to="/petro-problem" className="px-10 py-5 bg-transparent border border-[#e8e4dc]/20 text-[#e8e4dc] font-bold uppercase tracking-widest hover:bg-[#e8e4dc]/5 transition-colors">
@@ -260,6 +261,7 @@ const PetroLedger = () => {
                         Concilio Engineering • Series 7100
                     </div>
                 </div>
+                <Footer />
 
             </div>
         </div>

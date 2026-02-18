@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion } from "framer-motion";
 import ScrollCanvas from "../components/ScrollCanvas";
+import Footer from "../components/Footer";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -24,7 +25,7 @@ const MarketERP = () => {
             trigger: scrollContainerRef.current,
             start: "top top",
             end: "bottom bottom",
-            scrub: 0.1,
+            scrub: 0.8, // Smooth scrub for buttery scroll
             onUpdate: (self) => {
                 setScrollProgress(self.progress);
             },
@@ -292,15 +293,16 @@ const MarketERP = () => {
                         <p className="text-slate-500 mb-12">All in one system.</p>
 
                         <div className="flex flex-col md:flex-row gap-4 justify-center">
-                            <button className="px-8 py-4 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-lg transition-all shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:shadow-[0_0_50px_rgba(6,182,212,0.6)]">
+                            <Link to="/describe-problem" className="px-8 py-4 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-lg transition-all shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:shadow-[0_0_50px_rgba(6,182,212,0.6)] text-center">
                                 Start Free Trial
-                            </button>
+                            </Link>
                             <Link to="/market-problem" className="px-8 py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg border border-slate-700 transition-all text-center">
                                 Report Issue
                             </Link>
                         </div>
                     </div>
                 </div>
+                <Footer />
 
             </div>
         </div>

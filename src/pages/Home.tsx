@@ -1,23 +1,28 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import OriginNavbar from "../components/OriginNavbar";
 import PostSequence from "../components/PostSequence";
 import { OriginHero } from "../components/OriginHero";
+import { useLenisRef } from "../hooks/useLenis";
 
 function Home() {
     const [isScrolled, setIsScrolled] = useState(false);
+    const lenisRef = useLenisRef();
+
+    const handleScroll = useCallback(() => {
+        setIsScrolled(window.scrollY > 24);
+    }, []);
 
     useEffect(() => {
-        const onScroll = () => setIsScrolled(window.scrollY > 24);
-        window.addEventListener("scroll", onScroll, { passive: true });
-        onScroll();
-        return () => window.removeEventListener("scroll", onScroll);
-    }, []);
+        window.addEventListener("scroll", handleScroll, { passive: true });
+        handleScroll();
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [handleScroll]);
 
     return (
         <div className="min-h-screen bg-black text-white selection:bg-white/20">
-            <OriginNavbar isScrolled={isScrolled} onScrollChange={setIsScrolled} />
+            <OriginNavbar isScrolled={isScrolled} onScrollChange={setIsScrolled} lenisRef={lenisRef} />
             <main>
-                <OriginHero onScrollChange={setIsScrolled} />
+                <OriginHero onScrollChange={setIsScrolled} lenisRef={lenisRef} />
                 <PostSequence />
             </main>
         </div>

@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import ProblemDescriptionForm from '../components/ProblemDescriptionForm';
+import Footer from '../components/Footer';
 
 const SchoolProblemFormPage = () => {
     return (
@@ -49,6 +50,7 @@ const SchoolProblemFormPage = () => {
                     </p>
                 </div>
             </div>
+            <Footer />
         </div>
     );
 };

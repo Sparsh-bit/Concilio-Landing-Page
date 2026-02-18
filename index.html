@@ -4,12 +4,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO Meta Tags -->
   <meta name="description"
     content="Concilio - Enterprise ERP Solutions. Custom-built ERP systems for petrol pumps, schools, retail, SMEs and enterprises. One Platform. Total Control." />
   <meta name="keywords"
-    content="ERP, Enterprise Resource Planning, Petrol Pump ERP, School ERP, Retail ERP, Business Management" />
-  <meta name="author" content="Concilio" />
+    content="ERP, Enterprise Resource Planning, Petrol Pump ERP, School ERP, Market ERP, Retail ERP, Business Management, Concilio" />
+  <meta name="author" content="Concilio Studio" />
   <meta name="theme-color" content="#000000" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="generator" content="Vite" />
+  <link rel="canonical" href="https://concilio.in/" />
+
+  <!-- Security Meta Tags -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://concilio.in/" />
@@ -17,22 +29,59 @@
   <meta property="og:description"
     content="Custom-built ERP systems for petrol pumps, schools, and enterprises. One Platform. Total Control." />
   <meta property="og:image" content="/og-image.jpg" />
-  <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image" />
-  <meta property="twitter:url" content="https://concilio.in/" />
-  <meta property="twitter:title" content="Concilio | Enterprise ERP & Systems" />
-  <meta property="twitter:description"
-    content="Custom-built ERP systems for petrol pumps, schools, and enterprises. One Platform. Total Control." />
-  <meta property="twitter:image" content="/og-image.jpg" />
+  <meta property="og:site_name" content="Concilio" />
+  <meta property="og:locale" content="en_US" />
 
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://concilio.in/" />
+  <meta name="twitter:title" content="Concilio | Enterprise ERP & Systems" />
+  <meta name="twitter:description"
+    content="Custom-built ERP systems for petrol pumps, schools, and enterprises. One Platform. Total Control." />
+  <meta name="twitter:image" content="/og-image.jpg" />
+
+  <!-- DNS Prefetch & Preconnect for Performance -->
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- Favicon -->
   <link rel="icon" type="image/svg+xml"
     href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>C</text></svg>" />
+
   <title>Concilio | Enterprise ERP & Systems</title>
+
+  <!-- Structured Data (JSON-LD) for SEO -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Concilio",
+      "url": "https://concilio.in",
+      "logo": "https://concilio.in/og-image.jpg",
+      "description": "Engineering Simplicity for Complex Businesses. Custom-built ERP systems for petrol pumps, schools, and enterprises.",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+91-99120-44852",
+        "contactType": "customer service",
+        "email": "studio@concilio.in",
+        "availableLanguage": ["English", "Hindi"]
+      },
+      "sameAs": []
+    }
+  </script>
 </head>
 
 <body>
+  <!-- Noscript fallback for accessibility -->
+  <noscript>
+    <div style="padding: 2rem; text-align: center; background: #000; color: #fff; font-family: system-ui;">
+      <h1>Concilio - Enterprise ERP Solutions</h1>
+      <p>JavaScript is required to view this website. Please enable JavaScript and reload.</p>
+    </div>
+  </noscript>
+
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
 </body>

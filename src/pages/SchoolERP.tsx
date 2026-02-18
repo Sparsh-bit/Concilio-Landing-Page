@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion } from "framer-motion";
 import ScrollCanvas from "../components/ScrollCanvas";
+import Footer from "../components/Footer";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -24,7 +25,7 @@ const SchoolERP = () => {
             trigger: scrollContainerRef.current,
             start: "top top",
             end: "bottom bottom",
-            scrub: 0, // Instant scrub for responsiveness
+            scrub: 0.8, // Smooth scrub for buttery scroll
             onUpdate: (self) => {
                 setScrollProgress(self.progress);
             },
@@ -281,9 +282,9 @@ const SchoolERP = () => {
                         <p className="text-zinc-500 mb-12 uppercase tracking-widest text-xs">Designed for Schools, Colleges & Universities.</p>
 
                         <div className="flex flex-col md:flex-row gap-6 justify-center">
-                            <button className="px-10 py-4 bg-[#ffcc00] hover:bg-[#ffdb4d] text-black font-bold text-sm uppercase tracking-widest rounded-none transition-all hover:scale-105 shadow-[0_0_40px_-5px_rgba(255,204,0,0.3)]">
+                            <Link to="/describe-problem" className="px-10 py-4 bg-[#ffcc00] hover:bg-[#ffdb4d] text-black font-bold text-sm uppercase tracking-widest rounded-none transition-all hover:scale-105 shadow-[0_0_40px_-5px_rgba(255,204,0,0.3)] text-center">
                                 Schedule Demo
-                            </button>
+                            </Link>
                             <Link to="/school-problem" className="px-10 py-4 bg-transparent hover:bg-white/5 text-[#e8e4dc] font-bold text-sm uppercase tracking-widest rounded-none border border-[#e8e4dc]/20 transition-all text-center">
                                 Report Issue
                             </Link>
@@ -294,6 +295,7 @@ const SchoolERP = () => {
                         </div>
                     </div>
                 </div>
+                <Footer />
 
             </div>
         </div>

@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import ProblemDescriptionForm from '../components/ProblemDescriptionForm';
+import Footer from '../components/Footer';
 
 const PetroProblemFormPage = () => {
     return (
@@ -45,6 +46,7 @@ const PetroProblemFormPage = () => {
                     </p>
                 </div>
             </div>
+            <Footer />
         </div>
     );
 };
